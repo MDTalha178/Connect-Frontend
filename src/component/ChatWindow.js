@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState } from 'react';
-import { FaPaperPlane, FaPlus } from 'react-icons/fa';
+import { FaPaperPlane, FaPlus, FaUserCircle } from 'react-icons/fa';
 import ChatModal from './ChatModal';
 import SenderChat from './SenderChat';
 import RecieverChat from './ReceiverChat';
@@ -7,44 +7,40 @@ import { useDispatch, useSelector } from 'react-redux';
 import { incrementUnreadCount, reset_chat_count, updateChat } from '../store/chatSlice';
 import { getUserCredentials } from '../utils/localStorage';
 import { CHAT_WEBSOCKET_BASE_URL } from '../utils/clientUrl';
-import {filterData} from '../utils/filter'
+import { EndToEndEcryption } from './EndToEndEcryption';
+import { useChatCount } from '../hooks/usechatCount';
+import { useOnlineStatus } from '../hooks/useSetOnlineStatus';
+import { useMessageScroll } from '../hooks/useMessageScroll';
 
 const ChatWindow = ({roomId, senderId, reciverId, receiverName, config_id, setonline_status}) => {
 
+  useChatCount(config_id);
+  const online_status = useOnlineStatus(setonline_status);
 
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const message = useRef()
 
   const socketRef = useRef(null);
-  const chatmessagList = useSelector((store) => store.chat.chatMessages);
 
-  const online_status = useSelector((store) => store.chat.online_status);
-  setonline_status(online_status)
+  const messagesEndRef = useRef(null);
+  const chatmessagList = useMessageScroll(messagesEndRef)
 
   const toggleModal = () => setShowModal(!showModal);
-  const messagesEndRef = useRef(null);
 
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-  
 
 
   useEffect(() =>{
-    dispatch(reset_chat_count({chatId: config_id}));
 
     const socket = new WebSocket(CHAT_WEBSOCKET_BASE_URL(roomId, senderId));
 
     socketRef.current = socket
     socket.onmessage = function(event) {
-        
-        scrollToBottom();
+
         const data = JSON.parse(event.data);
         const isSender = data.sender_id === getUserCredentials().user_id;
 
-        if(data.room_name === roomId) dispatch(updateChat([{messages: data.message, is_sender: isSender}]));
+        if(data.room_name === roomId) dispatch(updateChat({message:[{messages: data.message, is_sender: isSender}], config_id:config_id}));
 
         
         if (roomId !== data.room_name){
@@ -67,13 +63,14 @@ const ChatWindow = ({roomId, senderId, reciverId, receiverName, config_id, seton
     };
 
 
-  },[config_id, setonline_status])
+  },[config_id, setonline_status, chatmessagList])
 
   const sendMessage = () =>{
     socketRef.current.send(JSON.stringify({
       sender_id:senderId,
       receiver_id:reciverId,
-      message: message.current.value
+      message: message.current.value,
+      config_id: config_id
     }));  
     message.current.value = '';
   }
@@ -81,19 +78,21 @@ const ChatWindow = ({roomId, senderId, reciverId, receiverName, config_id, seton
   return (
     <div className="flex-1 flex flex-col bg-gray-50">
       {/* Header */}
-      <div className="p-4 bg-white border-b flex justify-between items-center">
+      <div className="p-4 bg-white border-b flex gap-4 items-center">
+         <FaUserCircle className="text-3xl text-gray-600" />
         <div>
           <h2 className="font-semibold">{receiverName}</h2>
           <p className="text-sm text-gray-500">{online_status}</p>
         </div>
       </div>
       {/* Messages */}
+      <EndToEndEcryption />
       <div className="flex-1 p-4 overflow-y-auto space-y-2">
           {chatmessagList ? chatmessagList.map((item, index) =>
             item.is_sender ? (
-              <SenderChat key={index} message={item.messages}/>
+              <SenderChat key={index} message={item.messages} sentTime={item.created_at}/>
             ) : (
-              <RecieverChat key={index} message={item.messages}/>
+              <RecieverChat key={index} message={item.messages} sentTime={item.created_at}/>
             )
           ) : null}
           <div ref={messagesEndRef} />

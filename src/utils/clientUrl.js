@@ -16,3 +16,16 @@ export const VERIFICATION_URL = `${BASE_URL}auth/login/verification/`
 
 export const GLOBAL_WEBSCOCKET_BASE_URL = (user_id) =>
     `ws://localhost:8000/ws/user/${user_id}/`
+
+
+export const CREATE_CHAT = `${BASE_URL}chat/chat-list/create-chat/`
+
+export const GET_MUTE_URL = (mute_type) => 
+   mute_type && mute_type? `${BASE_URL}chat/chat-action/un-mute-chat/` : `${BASE_URL}chat/chat-action/mute-chat/`
+
+export const CHAT_ACTION_URL = {
+    Umute:`${BASE_URL}chat/chat-action/un-mute-chat/`,
+    Mute:`${BASE_URL}chat/chat-action/mute-chat/`,
+    ChatPin:`${BASE_URL}chat/chat-action/set-chat-pin/`
+
+}

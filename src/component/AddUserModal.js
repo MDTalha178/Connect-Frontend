@@ -1,14 +1,47 @@
 import React from "react";
 import Select from "react-select";
+import { serverCall } from "../utils/client";
+import { CREATE_CHAT } from "../utils/clientUrl";
+import { showToast } from "./Toast";
+import { API_CALL_METHOD } from "../utils/constant";
+import { useDispatch } from "react-redux";
 
 const StartChatModal = ({ isOpen, onClose, userList = [] }) => {
+
+  const dispatch = useDispatch();
+
+   const [selectedUser, setSelectedUser] = React.useState(null);
   if (!isOpen) return null;
 
-  // Format userList for react-select
   const options = userList.map((user) => ({
     value: user.id,
     label: user.first_name + " " + user.last_name,
   }));
+
+
+  const handleOnSubmit = async() =>{
+
+      const response = await serverCall(CREATE_CHAT, API_CALL_METHOD.POST, 
+        {participant_ids:[selectedUser?.value],is_group_chat:false}, {}, true,
+        {success:"Chat Created Successfully"}
+      );
+
+      try{
+        if(response?.status_code === 200){
+          onClose();
+          console.log(response?.data?.data?.id);
+          showToast('In few seconds Chat list will reaload from Where You can your chat at first', 'info');
+          setTimeout(() => {
+            window.location.reload();
+          }, 5000);
+
+
+        }
+      }catch(e){
+          if(response?.status_code === 400) showToast('Something went wrong', 'error');
+      }
+  }
+
   
 
   return (
@@ -29,6 +62,7 @@ const StartChatModal = ({ isOpen, onClose, userList = [] }) => {
         {/* Searchable Dropdown */}
         <Select
           options={options}
+          onChange={setSelectedUser}
           placeholder="Search or select a user..."
           className="text-sm"
           styles={{
@@ -55,6 +89,7 @@ const StartChatModal = ({ isOpen, onClose, userList = [] }) => {
             }),
           }}
         />
+        {selectedUser && <button className="bg-[#25D366] hover:bg-green-700 text-white py-2 px-4 rounded mt-4" onClick={handleOnSubmit}>Start Chat</button>}
       </div>
     </div>
   );

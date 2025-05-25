@@ -23,7 +23,8 @@ const OtpVerification = () => {
 
         const response = await serverCall(VERIFICATION_URL, API_CALL_METHOD.POST, {
             email:email,
-            otp:otp
+            otp:otp,
+            verification_type:'EMAIL'
         }, {}, false, {success: 'Verification Succesfull!'})   
         try{
            if(response?.status_code === 200){

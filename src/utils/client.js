@@ -30,7 +30,6 @@ const postClient = async (url, data, headers = {}, isAuth, message) => {
         });
     
         const result = await response.json();
-        console.log(result);
     
         if (result.status_code === 200) {
             showToast(message?.success || 'Success', 'success');
@@ -42,7 +41,6 @@ const postClient = async (url, data, headers = {}, isAuth, message) => {
         return result;
     } 
     catch (error) {
-      console.error('POST request error:', error);
       showToast('Something went wrong. Please try again later.', 'error');
       return { status_code: 500, error: true, message: error.message };
     }
