@@ -32,7 +32,7 @@ const ChatOptionsMenu = ({chatItem, onActionSelect, isOpen, index, openchatIndex
 
   const handleAction = (action, open_type) =>{
     setIsModalOpenType(action);
-    setactionModalOpen(open_type);
+    setactionModalOpen(open_type)
   }
 
   useEffect(() => {
@@ -66,12 +66,13 @@ const ChatOptionsMenu = ({chatItem, onActionSelect, isOpen, index, openchatIndex
             className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
             onClick={() => handleOptionClick("block")}
           >
-            <p onClick={() => handleAction("block", true)}>🚫 Block User</p>
+            <p onClick={() => handleAction("block", true)}>{chatItem?.is_chat_mute?.chat_block ?" 🔓 Unblock User": "🚫 Block User"}</p>
             {actionModalOpen && isModalOpenType == 'block'? 
             <MuteChat  
               isOpen={setIsModalOpenType} 
               actionModalOpen={setactionModalOpen}
-              modalType="block" 
+              modalType={chatItem?.is_chat_mute?.chat_block ? "unblock" : "block"}
+              chatItem={chatItem}
               onMute={() => handleOptionClick("block", true)}
             />: null}
           </div>
@@ -79,7 +80,7 @@ const ChatOptionsMenu = ({chatItem, onActionSelect, isOpen, index, openchatIndex
             className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
             onClick={() => handleOptionClick("pin")}
           >
-           <p onClick={() => handleAction("pin", true)}>📌 Set Pin</p>
+           <p onClick={() => handleAction(chatItem?.is_chat_mute?.is_chat_pin_set ? "RemovePin" : 'pin', true)}>{chatItem?.is_chat_mute?.is_chat_pin_set ? "📌 Remove Pin" : "📌 Set Pin"}</p>
            {actionModalOpen && isModalOpenType == 'pin'? 
            <SetPinModal  
             isOpen={setIsModalOpenType}
@@ -88,6 +89,14 @@ const ChatOptionsMenu = ({chatItem, onActionSelect, isOpen, index, openchatIndex
             actionModalOpen={setactionModalOpen}
            />
           : null}
+           {actionModalOpen && isModalOpenType == 'RemovePin'? 
+            <SetPinModal  
+              isOpen={setIsModalOpenType} 
+              actionModalOpen={setactionModalOpen}
+              modalType="RemovePin" 
+              chatItem={chatItem}
+              onMute={() => handleOptionClick("RemovePin", true)}
+            />: null}
           </div>
         </div>
       )}

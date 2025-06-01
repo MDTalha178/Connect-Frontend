@@ -1,12 +1,32 @@
 import { useRef } from "react";
 import { FaInfoCircle } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { filterSingledata } from "../utils/filter";
+import { chatAction } from "../utils/userChat";
 
-export const VerifyChatPin = ({isOpen, setChatConfig, setshowChatPinIndex}) =>{
+export const VerifyChatPin = ({isOpen, setChatConfig, setshowChatPinIndex, reciverId, config_id}) =>{
 
     const chatPin = useRef();
+    const chatList = useSelector((state) => state.chat.chatList);
 
     const handleVerifyChatPin = async() =>{
-        isOpen(false);
+        const chatItem = filterSingledata(chatList, 'id', config_id);
+        try{
+          if(chatItem){
+            const response = await chatAction('VerifyPin', chatItem, {
+              chat_pin:chatPin.current.value,
+            });
+            if(response.status_code == 200){
+              isOpen(false);
+            }
+          }
+        }catch(e){
+          console.log("Inner")
+          throw(e)
+        }finally{
+          chatPin.current.value = '';
+        }
+
     }
 
     const handleCancelation = () =>{

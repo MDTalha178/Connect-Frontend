@@ -2,7 +2,10 @@ export const CHAT_ACTION_TYPE = {
     Umute: "Umute",
     Mute: "Mute",
     Block: "Block",
-    ChatPin: "ChatPin"
+    UnBlock: "UnBlock",
+    ChatPin: "ChatPin",
+    VerifyPin:"VerifyPin",
+    RemovePin:"RemovePin"
 }
 
 export const toasMessage = {
@@ -10,12 +13,20 @@ export const toasMessage = {
         Umute: "Chat umuted sucessfully!",
         Mute: "Chat muted successfully!",
         Block: "User Block successfully!",
-        ChatPin:"Pin Set successfully!"
+        UnBlock: "User Unblock successfully!",
+        ChatPin:"Pin Set successfully!",
+        VerifyPin: "Pin Verify sucessfyll1",
+        RemovePin: "Pin deleted successfully!"
+
     }
 }
 
 export const CHAT_ACTION_MODAL = {
-    Umute: "unmute",
-    Mute:"mute",
-    Block: "block"
+    Umute: "Unmute",
+    Mute:"Mute",
+    Block: "Block",
+    UnBlock: "UnBlock",
+    RemovePin: "Delete Pin",
+    ChatPin: "Save Pin"
+    
 }

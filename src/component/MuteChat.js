@@ -7,14 +7,18 @@ import { useDispatch } from "react-redux";
 import { update_mute_chat } from "../store/chatSlice";
 import { getChatActionModalText } from "../utils/utils";
 import { chatAction } from "../utils/userChat";
+import { useRef } from "react";
 
 export const MuteChat = ({isOpen, actionModalOpen, modalType, chatItem}) =>{
 
   const dispatch = useDispatch()
-
+  const reason = useRef()
   const chatMute = async() =>{
     try{
-      const response =  await chatAction(modalType, chatItem);
+      const response =  await chatAction(modalType, chatItem, {
+        reason: reason?.current?.value,
+        action_type: modalType == 'unblock'? false: true
+      });
       dispatch(update_mute_chat(response?.data?.data));
       isOpen(null)
 
@@ -39,6 +43,19 @@ export const MuteChat = ({isOpen, actionModalOpen, modalType, chatItem}) =>{
             Are you sure you want to {getChatActionModalText(modalType, chatItem)}?
           </h2>
         </div>
+
+         {/* Reason Input */}
+       {modalType == 'block' &&<div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Reason (optional)
+          </label>
+          <textarea
+            ref={reason}
+            rows={3}
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter a reason for this action..."
+          />
+        </div>}
 
         {/* Buttons */}
         <div className="flex justify-end gap-3 mt-6">

@@ -26,6 +26,10 @@ export const GET_MUTE_URL = (mute_type) =>
 export const CHAT_ACTION_URL = {
     Umute:`${BASE_URL}chat/chat-action/un-mute-chat/`,
     Mute:`${BASE_URL}chat/chat-action/mute-chat/`,
-    ChatPin:`${BASE_URL}chat/chat-action/set-chat-pin/`
+    ChatPin:`${BASE_URL}chat/chat-action/set-chat-pin/`,
+    VerifyPin:`${BASE_URL}chat/chat-action/verify-chat-pin/`,
+    RemovePin:`${BASE_URL}chat/chat-action/delete-chat-pin/`,
+    Block:`${BASE_URL}chat/chat-action/block-unblock-user/`,
+    UnBlock:`${BASE_URL}chat/chat-action/block-unblock-user/`
 
 }

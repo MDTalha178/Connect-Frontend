@@ -16,8 +16,19 @@ export const chatActionType = (action_type, chatItem) =>{
   else if(action_type == 'pin'){
     return CHAT_ACTION_TYPE.ChatPin
   }
+  else if(action_type == 'VerifyPin'){
+    return CHAT_ACTION_TYPE.VerifyPin
+  }
+  else if (action_type == 'RemovePin'){
+    return CHAT_ACTION_TYPE.RemovePin
+  }
   else{
-    return CHAT_ACTION_TYPE.Block
+    if(chatItem?.is_chat_mute?.chat_block){
+     
+      return CHAT_ACTION_TYPE.UnBlock
+    }
+     return CHAT_ACTION_TYPE.Block
+  
   }
 }
 

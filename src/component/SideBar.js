@@ -15,12 +15,12 @@ const Sidebar = ({ setChatConfig, setRoomId, setsenderID, setrecieverID, setRece
   const[chatIndex, setChatIndex] = useState(null);
 
   const updateChatTab = (item, index) => {
-    console.log(index);
-    console.log(setChatIndex)
     if(item?.is_chat_mute?.is_chat_pin_set && showChatPinIndex != index){
       showChatPin(true);
       setshowChatPinIndex(index);
 
+    }else{
+      if(!item?.is_chat_mute?.is_chat_pin_set)  setshowChatPinIndex(null);
     }
     setChatConfig(item.id);
     setRoomId(item.chat_room_name);
@@ -71,6 +71,7 @@ const Sidebar = ({ setChatConfig, setRoomId, setsenderID, setrecieverID, setRece
                       {item.unread_count}
                     </span>
                   )}
+                  {item?.is_chat_mute?.chat_block && "🚫"}
                   {item?.is_chat_mute?.is_chat_pin_set ?<FaLock className="text-gray-500 text-sm" title="Locked Chat" />: null}
                   {item?.is_chat_mute?.chat_mute ?<div className="relative w-6 h-7 justify-center">
                     <MdVolumeOff

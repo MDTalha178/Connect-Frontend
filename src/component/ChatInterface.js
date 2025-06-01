@@ -87,7 +87,15 @@ export const ChatInterface = () => {
       <div className="h-screen flex bg-gray-100">
         <Sidebar setChatConfig={setChatConfig} setRoomId={setRoomId} setsenderID={setsenderID} setrecieverID={setrecieverID} setReceiverName={setReceiverName} showChatPin={setshowChatPin} setshowChatPinIndex={setshowChatPinIndex} showChatPinIndex={showChatPinIndex}/>
         {chatConfig  && !showChatPin ?<ChatWindow  roomId={roomId} senderId={senderId} reciverId={reciverId} receiverName={receiverName} config_id={chatConfig} setonline_status={setonline_status}/> : 
-         !showChatPin ? <ChatStarter /> : <VerifyChatPin isOpen={setshowChatPin} setChatConfig={setChatConfig} setshowChatPinIndex={setshowChatPinIndex}/>}
+         !showChatPin ? <ChatStarter /> : 
+         <VerifyChatPin 
+            isOpen={setshowChatPin} 
+            setChatConfig={setChatConfig} 
+            setshowChatPinIndex={setshowChatPinIndex}
+            reciverId={reciverId}
+            config_id={chatConfig}
+          />
+        }
       </div>
     );
   };
